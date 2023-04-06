@@ -1,0 +1,17 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{1}{}%
+\contentsline {subsection}{\numberline {1.1}Mots-clés}{1}{}%
+\contentsline {subsection}{\numberline {1.2}Problématique}{1}{}%
+\contentsline {subsection}{\numberline {1.3}Résumé}{2}{}%
+\contentsline {subsection}{\numberline {1.4}Motivation}{2}{}%
+\contentsline {subsection}{\numberline {1.5}Lien avec la ville}{2}{}%
+\contentsline {section}{\numberline {2}Sous-problèmes}{2}{}%
+\contentsline {subsection}{\numberline {2.1}Distance entre les stations}{2}{}%
+\contentsline {subsection}{\numberline {2.2}Espacement entre les trains}{3}{}%
+\contentsline {subsection}{\numberline {2.3}Information aux voyageurs}{4}{}%
+\contentsline {subsection}{\numberline {2.4}Agrandissement}{4}{}%
+\contentsline {subsection}{\numberline {2.5}Autres idées à explorer}{4}{}%
+\contentsline {section}{\numberline {3}Sources}{4}{}%
+\contentsline {section}{\numberline {4}Code}{5}{}%
+\contentsline {subsection}{\numberline {4.1}metro.c (incomplet)}{5}{}%
+\contentsline {subsection}{\numberline {4.2}vector.h (nécessaire pour le code précédent)}{15}{}%

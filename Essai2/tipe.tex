@@ -1,0 +1,127 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage[french]{babel}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  filecolor=magenta,
+  urlcolor=blue,
+}
+\graphicspath{ {./images/} }
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false, 
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{TIPE - La Ville}
+\author{Valentin FOULON}
+
+\begin{document}
+
+% \begin{titlepage}
+\maketitle
+% \end{titlepage}
+\tableofcontents
+
+\section{Introduction}
+\subsection{Titre}
+Comment créer un réseau de transports publics dans une ville afin de minimiser les temps de déplacement ?
+\subsection{Ancrage dans le thème}
+Ce sujet s'inscrit bien dans le thème de la ville, en effet, il permet d'étudier les réseaux de transport public, qui sont au cœur des villes, car ils permettent à leurs habitants de se déplacer pour aller au travail par exemple.
+\subsection{Motivation du choix de l'étude}
+J'ai choisi ce sujet pour pouvoir créer différents algorithmes d'optimisation dans des graphes et comparer leur efficacité, que ce soit en complexité temporelle ou spatiale, et au final proposer la meilleure configuration réaliste qui permet d'avoir un temps de trajet minimal en fonction du nombre de lignes.
+
+\section{MCOT}
+\subsection{Positionnements thématiques et mots-clés}
+Informatique (Informatique pratique), Mathématiques (Autres domaines)
+\newline
+\begin{tabularx}{\textwidth} { 
+    | >{\centering\arraybackslash}X 
+    | >{\centering\arraybackslash}X | 
+    }
+    \hline
+    \textbf{Français} & \textbf{Anglais} \\ 
+    \hline
+    Optimisation & Optimization \\ 
+    \hline
+    Théorie des graphes & Graph theory \\
+    \hline
+    Algorithme de Dijkstra & Dijkstra's algorithm \\ 
+    \hline
+    Algorithme glouton & Greedy algorithm \\
+    \hline
+    k plus proches voisins & k-Nearest neighbors \\
+    \hline
+    Problème de flot maximum & Maximum flow problem \\
+    \hline
+  \end{tabularx}
+\subsection{Bibliographie commentée}
+Les graphes considérés dans ce problème sont des graphes pondérés non orientés, le poids d'une arête correspond à la distance par la norme 2 définie par
+$$\forall (x, y) \textrm {avec} x = x_1 + ... + x_n \textrm{et} y = y_1 + ... + y_n, \|x - y\|_2 = \left( {\sum_{j=1}^n{|x_j - y_j|^2}} \right) ^ {1/2}$$
+entre ses deux exrémités.
+
+On définit la distance de déplacement entre deux sommets u et v comme l'espérance du temps que met un marcheur aléatoire pour faire un aller-retour entre u et v [3][4].
+
+La demande de lignes de transport peut être analysée de la manière suivante : pour une période T de temps, pour chaque intervalle de taille T, on regroupe les demandes par "zone" de proximité en excluant le "bruit", puis à la fin, on garde les groupes de lignes les plus demandées [2].
+
+De même, on peut pour définir les critères de choix utiliser la méthode ELECTRE pour classer ces critères selon leur importance avec des relations d'indifférence, de préférence et d'incompatibilité. Cette méthode permet ensuite de prioriser certaines contraintes qui doivent absolument être respectées et se permettre d'en négliger d'autres [1].
+
+Le problème pourra enfin être ramené à un problème de flot, c'est-à-dire pour un graphe donné, déterminer si il est possible de transporter toute l'information (ici des passagers) sur ce graphe muni d'une fonction de capacité et d'une fonction de flot. Il faudra donc vérifier si le graphe considéré permet de transporter le nombre de voyageurs requis ou non [6].
+
+\subsection{Problématique retenue}
+Il s'agit ici d'étudier différents algorithmes de manipulation de graphes et de les comparer afin d'en déduire un autre plus efficace.
+\subsection{Objectifs du TIPE}
+\begin{enumerate}
+  \item Créer aléatoirement différents placements de points d'intérêt dans une ville.
+  \item Appliquer différents algorithmes de graphes vus en cours (plus court chemin (Dijkstra), Kruskal).
+  \item Analyser les résultats pour en déduire leur efficacité ainsi que les situations dans lesquelles ils sont utiles.
+  \item En déduire une solution ou un ensemble de solutions permettant de répondre au problème initial
+\end{enumerate}
+\subsection{Références bibliographiques}
+\begin{enumerate}
+  \item Hal open science - Le choix du tracé d’une ligne de transport en commun
+  en site propre et de la position de sa plateforme en
+  milieu urbain : l’utilisation des outils mathématiques au
+  service de la concertation \url{https://theses.hal.science/file/index/docid/468607/filename/2008PEST0266_0_0.pdf}
+  \item Polytechnique Montreal - Conception d'un réseau de transport en commun pour le transport
+  des patients sur l'Île-de-Montréal \url{https://publications.polymtl.ca/2896/1/2017_AnneLaurenceThoux.pdf}
+  \item Stack exchange - Commute time distance in a graph \url{https://math.stackexchange.com/questions/1321305/commute-time-distance-in-a-graph}
+  \item Ulrkie von Luxburg - Hitting and Commute Times in Large Random
+  Neighborhood Graphs \url{https://jmlr.org/papers/volume15/vonluxburg14a/vonluxburg14a.pdf}
+  \item University of California, Davis - Distances on Graphs III: From
+  Commute-Time Distance to Diffusion Distance \url{https://www.math.ucdavis.edu/~saito/courses/HarmGraph/lecture13.pdf}
+  \item Inria - Flow Problems \url{http://www-sop.inria.fr/members/Frederic.Havet/Cours/flow.pdf}
+\end{enumerate}
+\end{document}

@@ -1,0 +1,14 @@
+{
+    "ocaml.sandbox": {
+        "kind": "opam",
+        "switch": "default"
+    },
+    "files.associations": {
+        "vector.h": "c",
+        "json.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "math.h": "c"
+    },
+    "makefile.makefilePath": "Essai2/Makefile"
+}
