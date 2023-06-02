@@ -13,6 +13,8 @@ X = np.array([])
 for x in data['data']:
     X = np.append(X, [x])
 
+paths = []
+
 # def mu(array):
 #     m = 0
 #     for x in array:
@@ -30,123 +32,84 @@ for x in data['data']:
 #     return s**(1/2)
 
 # Calculate path length between two nodes
-def calculatePath(node1, node2, array):
-    # print("Calculating path between", node1, "and", node2)
-    # print(array)
-    path = 0
-    current = node1
-    while current != node2:
-        # print("Current node:", current)
-        # print("Path:", path)
-        found = False
-        for elt in array:
-            if elt['s1'] == current:
-                # print("Found edge", elt['s1'], elt['s2'], "with weight", elt['w'])
-                path += elt['w']
-                current = elt['s2']
-                found = True
-                break
-        if not found:
-            # print("No path found")
-            return None
-    return path
+
+def calculatePath(node1, node2, array, pred):
+    if node1 == node2:
+        # print(total)
+        return 0
+    x = 0
+    for elt in array:
+        if elt['s1'] == node1:
+            if elt['s2'] != pred:
+                x = calculatePath(elt['s2'], node2, array, node1)
+                if x != None:
+                    x = x + elt['w']
+                    break
+        if elt['s2'] == node1:
+            if elt['s1'] != pred:
+                x = calculatePath(elt['s1'], node2, array, node1)
+                if x != None:
+                    x = x + elt['w']
+                    break
+    return x
+
+
+
+edges = []
+for elt in X:
+    if elt['s1'] not in edges:
+        edges.append(elt['s1'])
+    if elt['s2'] not in edges:
+        edges.append(elt['s2'])
+for edge1 in edges:
+    for edge2 in edges:
+        if edge1 != edge2:
+            path = calculatePath(edge1, edge2, X, None)
+            # print(path)
+            if path != None and path != 0:
+                paths.append(path)
+                # paths.append(path)
+# print(paths)
+paths = np.array(paths)
+
+# def calculatePath(node1, node2, array):
+#     # print("Calculating path between", node1, "and", node2)
+#     # print(array)
+#     path = 0
+#     current = node1
+#     while current != node2:
+#         # print("Current node:", current)
+#         # print("Path:", path)
+#         found = False
+#         for elt in array:
+#             if elt['s1'] == current:
+#                 # print("Found edge", elt['s1'], elt['s2'], "with weight", elt['w'])
+#                 path += elt['w']
+#                 current = elt['s2']
+#                 found = True
+#                 break
+#         if not found:
+#             # print("No path found")
+#             return None
+#     return path
 
 def maxPathLength(array):
-    max = 0
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    for edge1 in edges:
-        for edge2 in edges:
-            path = calculatePath(edge1, edge2, array)
-            if path != None and path != 0:
-                if path > max:
-                    max = path
-    return max
+    return np.max(paths)
 
 def minPathLength(array):
-    min = -1
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    for edge1 in edges:
-        for edge2 in edges:
-            path = calculatePath(edge1, edge2, array)
-            if path != None and path != 0:
-                if path < min or min == -1:
-                    min = path
-    return min
+    return np.min(paths)
 
 def avgPathLength(array):
-    sum = 0
-    cnt = 0
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    for edge1 in edges:
-        for edge2 in edges:
-            path = calculatePath(edge1, edge2, array)
-            if path != None and path != 0:
-                cnt += 1
-                sum += path
-    if cnt != 0:
-        return sum / cnt
-    return 0
+    return np.mean(paths)
 
 def medPathLength(array):
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    paths = []
-    for edge1 in edges:
-        for edge2 in edges:
-            if edge1 != edge2:
-                path = calculatePath(edge1, edge2, array)
-                if path != None and path != 0:
-                    paths.append(path)
     return np.median(paths)
 
 def sigmaPathLength(array):
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    paths = []
-    for edge1 in edges:
-        for edge2 in edges:
-            path = calculatePath(edge1, edge2, array)
-            if path != None and path != 0:
-                paths.append(path)
     return np.std(paths)
 
 def getAllPathLength(array):
-    edges = []
-    for elt in array:
-        if elt['s1'] not in edges:
-            edges.append(elt['s1'])
-        if elt['s2'] not in edges:
-            edges.append(elt['s2'])
-    paths = []
-    for edge1 in edges:
-        for edge2 in edges:
-            path = calculatePath(edge1, edge2, array)
-            if path != None and path != 0:
-                paths.append(path)
-    return np.array(paths)
+    return paths
 
 Y = np.array(list(map(lambda elt : elt['w'], X)))
 ya = Y.mean()
@@ -172,16 +135,18 @@ print("medPath =", xS)
 
 
 plt.hist(Y, bins=100, color='b')
-plt.axvline(x=ya, color='b', label='Avg = '+str(ya))
-plt.axvline(x=yS, color='b', label='Med = '+str(yS))
-plt.axvline(x=yM, color='b', label='Max = '+str(yM))
-plt.axvline(x=ym, color='b', label='Min = '+str(ym))
-plt.legend(loc='upper right')
+plt.axvline(x=ya, color='blue', label='AvgEdge = '+str(ya))
+plt.axvline(x=yS, color='red', label='MedEdge = '+str(yS))
+plt.axvline(x=yM, color='green', label='MaxEdge = '+str(yM))
+plt.axvline(x=ym, color='black', label='MinEdge = '+str(ym))
+plt.legend(loc='lower right')
+plt.title("Nombre d'arêtes par longueur")
 plt.show()
 plt.hist(getAllPathLength(X), bins=100, color='r')
-plt.axvline(x=xa, color='r', label='Avg = '+str(xa))
-plt.axvline(x=xS, color='r', label='Med = '+str(xS))
-plt.axvline(x=xM, color='r', label='Max = '+str(xM))
-plt.axvline(x=xm, color='r', label='Min = '+str(xm))
-plt.legend(loc='upper right')
+plt.axvline(x=xa, color='blue', label='AvgPath = '+str(xa))
+plt.axvline(x=xS, color='red', label='MedPath = '+str(xS))
+plt.axvline(x=xM, color='green', label='MaxPath = '+str(xM))
+plt.axvline(x=xm, color='black', label='MinPath = '+str(xm))
+plt.legend(loc='lower right')
+plt.title("Nombre de chemins par longueur")
 plt.show()

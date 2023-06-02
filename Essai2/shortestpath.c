@@ -6,20 +6,22 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include "json.h"
-#define NMAX 30
-#define GRIDSIZE 50
+// #define NMAX 30
+#define GRIDSIZE 100
 #define MAXLENGTH 15
+int NMAX = 1000;
 
 typedef struct Station {
 	int x;
 	int y;
 	char* name;
+	int id;
 } Station;
 
-typedef struct Pile {
+typedef struct Stack {
 	int val;
-	struct Pile* next;
-} Pile;
+	struct Stack* next;
+} Stack;
 
 typedef struct Solution {
 	struct edge val;
@@ -32,6 +34,23 @@ float** graphe2;
 char** grid;
 Station* stations;
 
+void initrandom();
+void initFromFile(FILE* fd);
+int power(int number, int nth);
+void append(Solution* s, struct edge next);
+double distance(Station station1, Station station2, bool horiz);
+void maketab(bool horiz, float** graphe);
+int hasValue(int x, int y);
+void makeGraph();
+int minimum(int len, float tab[], bool processed[]);
+void dijkstra(int initial, Stack** stack, bool w);
+void freeStack(Stack* p);
+Solution* copyEdgeList(Solution* li1);
+Stack* copyStack(Stack* li1);
+int edgeListLength(Solution* s1);
+Edgelist* convert(Solution* s1);
+int main(int argc, char* argv[]);
+
 void initrandom() {
 	stations = malloc(NMAX * sizeof(Station));
 	for (int i = 1; i < NMAX - 1; i++) {
@@ -39,18 +58,32 @@ void initrandom() {
 		asprintf(&l.name, "Salut");
 		l.x = random() % GRIDSIZE;
 		l.y = random() % GRIDSIZE;
+		l.id = i;
 		stations[i] = l;
 	}
 	Station l0;
 	asprintf(&l0.name, "Salut");
 	l0.x = 0;
 	l0.y = 0;
+	l0.id = 0;
 	stations[0] = l0;
 	Station lnmax;
 	asprintf(&lnmax.name, "Salut");
 	lnmax.x = GRIDSIZE - 1;
 	lnmax.y = GRIDSIZE - 1;
+	lnmax.id = NMAX - 1;
 	stations[NMAX - 1] = lnmax;
+}
+
+void initFromFile(FILE* fd) {
+	fscanf(fd, "%d", &NMAX);
+	stations = malloc(NMAX * sizeof(Station));
+	for (int i = 0; i < NMAX; i++) {
+		Station l;
+		asprintf(&l.name, "Salut");
+		fscanf(fd, "%d %d %d", &l.id, &l.x, &l.y);
+		stations[i] = l;
+	}
 }
 
 int power(int number, int nth) {
@@ -129,7 +162,7 @@ int minimum(int len, float tab[], bool processed[]) {
 	return min_index;
 }
 
-void dijkstra(int initial, Pile** stack, bool w) {
+void dijkstra(int initial, Stack** stack, bool w) {
 	float dist[NMAX];
 	int prev[NMAX];
 	bool processed[NMAX];
@@ -152,22 +185,22 @@ void dijkstra(int initial, Pile** stack, bool w) {
 	for (int i = 0; i < NMAX; i++) {
 		int pre = i;
 		while (pre != 0) {
-			printf("%d ", pre);
+			// printf("%d ", pre);
 			if (i == NMAX - 1) {
-				Pile* new = malloc(sizeof(Pile));
+				Stack* new = malloc(sizeof(Stack));
 				new->val = pre;
 				new->next = *stack;
 				*stack = new;
 			}
 			pre = prev[pre];
 		}
-		printf ("0\n");
+		// printf ("0\n");
 	}
 }
 
-void freePile(Pile* p) {
+void freeStack(Stack* p) {
 	if (p == NULL) return;
-	freePile(p->next);
+	freeStack(p->next);
 	free(p);
 }
 
@@ -179,11 +212,11 @@ Solution* copyEdgeList(Solution* li1) {
     return s2;
 }
 
-Pile* copyPile(Pile* li1) {
+Stack* copyStack(Stack* li1) {
     if (li1 == NULL) return NULL;
-    Pile* s2 = malloc(sizeof(Pile));
+    Stack* s2 = malloc(sizeof(Stack));
     s2->val = li1->val;
-    s2->next = copyPile(li1->next);
+    s2->next = copyStack(li1->next);
     return s2;
 }
 
@@ -214,34 +247,39 @@ Edgelist* convert(Solution* s1) {
 int main(int argc, char* argv[]) {
 	SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-	    if(0 != SDL_Init(SDL_INIT_VIDEO))
-    {
+	if(0 != SDL_Init(SDL_INIT_VIDEO)) {
         fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
         goto Quit;
     }
     window = SDL_CreateWindow("Shortest path", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (GRIDSIZE - 1) * 10, (GRIDSIZE - 1) * 10, SDL_WINDOW_SHOWN);
-    if(NULL == window)
-    {
+    if(NULL == window) {
         fprintf(stderr, "Erreur SDL_CreateWindow : %s", SDL_GetError());
         goto Quit;
     }
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if(NULL == renderer)
-    {
+    if(NULL == renderer) {
         fprintf(stderr, "Erreur SDL_CreateRenderer : %s", SDL_GetError());
         goto Quit;
     }
-	if(0 != SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255))
-    {
+	if(0 != SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255)) {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());
         goto Quit;
     }
+	SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	grid = malloc(GRIDSIZE * sizeof(char*));
 	for (int i = 0; i < GRIDSIZE; i++) {
 		grid[i] = malloc(GRIDSIZE * sizeof(char));
 	}
 	srand(time(NULL));
-	initrandom();
+	if (argc >= 2) {
+		FILE* fd;
+		fd = fopen(argv[1], "r");
+		initFromFile(fd);
+		fclose(fd);
+	} else {
+		initrandom();
+	}
 	// for (int i = 0; i < NMAX; i++) {
 	// 	printf("%d %d %d\n", i, stations[i].x, stations[i].y);
 	// }
@@ -253,14 +291,14 @@ int main(int argc, char* argv[]) {
 	// 	}
 	// 	printf("\n");
 	// }
-	printf("\n");
-	for (int i = 0; i < GRIDSIZE; i++) {
-	 	for (int j = 0; j < GRIDSIZE; j++) {
-	 		int x = hasValue(i, j);
-			if (x != -1) printf("%d", x); else printf(" ");
-		}
-		printf("\n");
-	}
+	// printf("\n");
+	// for (int i = 0; i < GRIDSIZE; i++) {
+	//  	for (int j = 0; j < GRIDSIZE; j++) {
+	//  		int x = hasValue(i, j);
+	// 		if (x != -1) printf("%d", x); else printf(" ");
+	// 	}
+	// 	printf("\n");
+	// }
 	makeGraph();
 	// maketab(true, graphe2);
 	// makeGraph(graphe2);
@@ -270,23 +308,23 @@ int main(int argc, char* argv[]) {
 	// 	}
 	// 	printf("\n");
 	// }
-	Pile* liste = malloc(sizeof(Pile));
+	Stack* liste = malloc(sizeof(Stack));
 	liste->val = -1;
 	liste->next = NULL;
 	int x, y;
 	dijkstra(0, &liste, true);
-	// Pile* restant = malloc(sizeof(Pile));
+	// Stack* restant = malloc(sizeof(Stack));
 	// restant->val = -1;
 	// while (restant->val != -1) {
 	// 	for (int i = 0; i < NMAX; i++) {
-	// 		Pile* k = copyPile(liste);
+	// 		Stack* k = copyStack(liste);
 	// 		bool append = false;
 	// 		while (k != NULL) {
 	// 			if (k->val == i) append = true;
 	// 			k = k->next;
 	// 		}
 	// 		if (append) {
-	// 			Pile* new = malloc(sizeof(Pile));
+	// 			Stack* new = malloc(sizeof(Stack));
 	// 			new->val = i;
 	// 			new->next = restant;
 	// 			restant = new;
@@ -295,14 +333,19 @@ int main(int argc, char* argv[]) {
 	// }
 	SDL_GetWindowSize(window, &x, &y);
 	for (int i = 0; i < NMAX; i++) {
-		if (i == 0) stations[i].x = stations[1].x;
-		if (i == NMAX - 1) stations[i].x = stations[i - 1].x;
+		if (argc < 2) {
+			if (i == 0) stations[i].x = stations[1].x;
+			if (i == NMAX - 1) stations[i].x = stations[i - 1].x;
+		}
 		SDL_RenderDrawPoint(renderer, stations[i].x * 10, stations[i].y * 10);	
+		SDL_RenderDrawPoint(renderer, stations[i].x * 10 + 1, stations[i].y * 10 + 1);	
+		SDL_RenderDrawPoint(renderer, stations[i].x * 10 + 1, stations[i].y * 10 - 1);	
+		SDL_RenderDrawPoint(renderer, stations[i].x * 10 - 1, stations[i].y * 10 + 1);	
+		SDL_RenderDrawPoint(renderer, stations[i].x * 10 - 1, stations[i].y * 10 - 1);	
 	}
 	SDL_RenderPresent(renderer);
 	SDL_Delay(500);
-	if(0 != SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255))
-    {
+	if(0 != SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255)) {
         fprintf(stderr, "Erreur SDL_SetRenderDrawColor : %s", SDL_GetError());
         goto Quit;
     }
@@ -315,7 +358,10 @@ int main(int argc, char* argv[]) {
 				case SDL_KEYUP:
 				// case SDL_KEYDOWN:
 					if (quit == 0) {
-						SDL_RenderDrawLine(renderer, stations[liste->val].x * 10, 0, stations[liste->val].x * 10, stations[liste->val].y * 10);
+						if (argc < 2) 
+							SDL_RenderDrawLine(renderer, stations[liste->val].x * 10, 0, stations[liste->val].x * 10, stations[liste->val].y * 10);
+						else
+							SDL_RenderDrawLine(renderer, stations[0].x * 10, stations[0].y * 10, stations[liste->val].x * 10, stations[liste->val].y * 10);
 						// edge t = {.s1 = liste->val, .s2 = liste->next->val, .w = distance(stations[liste->val], stations[liste->next->val], false)};
 						// append(sln, t); 
 						// stations[liste->val].x = 10000 * GRIDSIZE;
@@ -323,7 +369,7 @@ int main(int argc, char* argv[]) {
 						Solution* sln = malloc(sizeof(Solution));
 						printf("__sln__\n");
 						printf("0 %d\n", liste->val);
-						printf("d %d\n", (int) stations[liste->val].y);
+						// printf("d %d\n", (int) stations[liste->val].y);
 						edge t1;
 						t1.s1 = 0;
 						t1.s2 = liste->val;
@@ -333,7 +379,7 @@ int main(int argc, char* argv[]) {
 						// printf("No problem\n");
 						// append(sln, t1);
 						// printf("No problem v2\n");
-						while (liste != NULL && liste->next != NULL && liste->next->next != NULL && liste->next->next->next != NULL) {
+						while (liste != NULL && liste->next != NULL && liste->next->next != NULL) {
 							// printf("Hello\n");
 							// printf("%d %d\n", liste->val, liste->next->val);
 							SDL_RenderDrawLine(renderer, stations[liste->val].x * 10, stations[liste->val].y * 10, stations[liste->next->val].x * 10, stations[liste->next->val].y * 10);
@@ -354,10 +400,10 @@ int main(int argc, char* argv[]) {
 						}
 						edge t2;
 						t2.s1 = liste->val;
-						t2.s2 = 29;
+						t2.s2 = NMAX - 1;
 						t2.w = (double) (GRIDSIZE - 1) - stations[liste->val].y;
 						append(sln, t2);
-						SDL_RenderDrawLine(renderer, stations[liste->val].x * 10, stations[liste->val].y * 10, stations[liste->val].x * 10, (GRIDSIZE - 1) * 10);
+						if (argc < 2) SDL_RenderDrawLine(renderer, stations[liste->val].x * 10, stations[liste->val].y * 10, stations[liste->val].x * 10, (GRIDSIZE - 1) * 10);
 						// printf("Removing %d\n", liste->val);
 						// stations[liste->val].x = 100 * GRIDSIZE;
 						// stations[liste->val].y = 100 * GRIDSIZE;

@@ -8,7 +8,8 @@
         "json.h": "c",
         "stdio.h": "c",
         "stdbool.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "execinfo.h": "c"
     },
     "makefile.makefilePath": "Essai2/Makefile"
 }
