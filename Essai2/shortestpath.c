@@ -185,7 +185,6 @@ void dijkstra(int initial, Stack** stack, bool w) {
 	for (int i = 0; i < NMAX; i++) {
 		int pre = i;
 		while (pre != 0) {
-			// printf("%d ", pre);
 			if (i == NMAX - 1) {
 				Stack* new = malloc(sizeof(Stack));
 				new->val = pre;
@@ -194,7 +193,6 @@ void dijkstra(int initial, Stack** stack, bool w) {
 			}
 			pre = prev[pre];
 		}
-		// printf ("0\n");
 	}
 }
 

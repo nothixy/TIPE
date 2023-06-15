@@ -248,7 +248,6 @@ void freeSet(StackCouple* s) {
 }
 
 void classify(Station* stations, StackCouple* sets[], int count) {
-	// printf("Classify %d stations into %d groups\n", NMAX, K);
 	for (int i = 0; i < count; i++) {
 		double min = INT_MAX;
 		int minset = 0;
@@ -260,9 +259,6 @@ void classify(Station* stations, StackCouple* sets[], int count) {
 			}
 		}
 		push_alt(&sets[minset], stations[i].x, stations[i].y, i);
-		// pr_gr();
-		// printf("Done %d -> %d", i, minset);
-		// pr_dn();
 	}
 }
 
@@ -271,7 +267,6 @@ void getSetAvg(StackCouple* sets[]) {
 		double sumX = 0;
 		double sumY = 0;
 		int count = 0;
-		// printf("%d\n", i);
 		StackCouple* s = sets[i];
 		s = s->next;
 		while (s != NULL) {
@@ -283,17 +278,10 @@ void getSetAvg(StackCouple* sets[]) {
 		assert(count != 0);
 		sumX /= count;
 		sumY /= count;
-		// Couple c;
-		// c.x0 = sumX;
-		// c.y0 = sumY;
-		// sets[i] = malloc(sizeof(StackCouple));
-		// sets[i]->val = malloc(sizeof(Couple));
-		// sets[i]->next = NULL;
 		freeSet(sets[i]->next);
 		sets[i]->next = NULL;
 		sets[i]->val.x0 = sumX;
 		sets[i]->val.y0 = sumY;
-		// printf("Pos %d : %f %f\n", i, sumX, sumY);
 	}
 }
 

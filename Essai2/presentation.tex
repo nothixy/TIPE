@@ -18,6 +18,7 @@
 \usepackage{amsfonts}
 \usepackage{verbatim} 
 \setbeamercovered{transparent} 
+\setbeamertemplate{frametitle continuation}{}
 % \pagenumbering{alph}
 % \usepackage{beamerthemesplit}
 \beamertemplatenavigationsymbolsempty
@@ -97,7 +98,7 @@
 \begin{frame}{Définitions}
     \begin{minipage}{0.7\textwidth}
     \begin{block}{Définition}
-        Graphe : on note $G=(S, A)$ un graphe ayant pour sommets l'ensemble $S$ et pour arêtes l'ensemble $A$. On désigne par $|A|$ et $|S|$ les cardinaux respectifs de $A$ et $S$
+        Graphe : on note $G=(S, A)$ un graphe ayant pour sommets l'ensemble $S$ et pour arêtes l'ensemble $A$. On désigne par $|A|$ et $|S|$ les cardinaux respectifs de $A$ et $S$.
     \end{block}
     \end{minipage}
     \begin{minipage}{0.25\textwidth}
@@ -105,14 +106,14 @@
     \includegraphics[width=0.7\textwidth]{graphe_complet}
     \end{minipage}
     \begin{exampleblock}{Remarque}
-        On considère ici des graphes non orientés connexes : il n'y a pas de point isolé dans le graphe
+        On considère ici des graphes non orientés connexes : il n'y a pas de point isolé dans le graphe.
     \end{exampleblock}
 \end{frame}
 \begin{frame}{Définitions}
     \begin{block}{Définition}
-        Poids d'une arête : fonction $d : A \rightarrow \mathbb{N}, (u, v) \rightarrowtail d(u, v)$ utilisée pour les algorithmes de graphe. On utilisera ici la distance euclidienne entre deux sommets
+        Poids d'une arête : fonction $d : A \rightarrow \mathbb{N}, (u, v) \rightarrowtail d(u, v)$ utilisée pour les algorithmes de graphe. On utilisera ici la distance euclidienne entre deux sommets.
     \end{block}
-    On représente les villes par des graphes non orientés connexes. Les centres d'intérêt sont des sommets de ce graphe. Pour chaque couple (u, v) de sommets dans le graphe, si la distance entre u et v est inférieure à une valeur donnée, il existe une arête entre u et v. On suppose que le graphe ainsi créé reste connexe
+    On représente les villes par des graphes non orientés connexes. Les centres d'intérêt sont des sommets de ce graphe. Pour chaque couple (u, v) de sommets dans le graphe, si la distance entre u et v est inférieure à une valeur donnée, il existe une arête entre u et v. On suppose que le graphe ainsi créé reste connexe.
 \end{frame}
 \section{Objectifs du TIPE}
 \begin{frame}{Objectifs}
@@ -121,9 +122,9 @@
         \item Les algorithmes doivent produire des résultats efficaces
         \item Les algorithmes doivent être efficaces
         \begin{itemize}
-            \item On espère ici avoir une complexité inférieure à du $O(n^2)$
+            \item On espère ici avoir une complexité inférieure à $O(n^2)$
         \end{itemize}
-        \item Tous les points d'intérêt doivent être reliés entre eux sauf si aucune arête de longueur acceptable ne peut rendre le graphe connexe
+        \item Tous les points d'intérêt doivent être reliés entre eux
         \item La solution trouvée doit être réaliste
     \end{itemize}
 \end{frame}
@@ -135,23 +136,22 @@
         \item Le temps d'arrêt à une station est nul
         \item Le temps d'attente à une station est nul
     \end{itemize}
-    Ces suppositions ne sont pas réelles mais influent peu sur le résultat
+    Ces suppositions ne sont pas réelles mais influent peu sur le résultat.
 \end{frame}
 \begin{frame}{Paramètres}
     Les unités sont arbitraires
     \begin{itemize}
         \item On utilise un plan de taille 100*100
-        \item On souhaite des distances inférieures à 15
-        \item Pour les tests on positionne les points aléatoirement et on place au plus 1000 stations
+        % \item On souhaite des distances inférieures à 15
+        \item Pour les tests on positionne au plus 1000 stations de manière aléatoire
     \end{itemize}
-    Ces suppositions ne sont pas réelles mais influent peu sur le résultat
 \end{frame}
 \section{Première approche : algorithme de Dijkstra}
 \begin{frame}{Dijkstra}
     \begin{block}{Algorithme de Dijkstra}
-        Algorithme de plus court chemin dans un graphe
+        Algorithme de plus court chemin dans un graphe.
     \end{block}
-    Objectif : trouver le plus court chemin entre les bords haut et bas du plan
+    Objectif : trouver le plus court chemin entre les bords haut et bas du plan.
 \end{frame}
 \begin{frame}{Choix et utilisation de l'algorithme}
     \centering
@@ -170,23 +170,22 @@
     \centering
         \includegraphics[width=0.5\textwidth]{sp}
 
-    Cet algorithme crée des trajets avec peu de changements de direction
+    Cet algorithme crée des trajets avec peu de changements de direction.
 \end{frame}
 \begin{frame}{Mesure des résultats}
     Les différents algorithmes employés ici permettent de sauvegarder les graphes créés dans des fichiers.
-    Un autre programme peut ensuite calculer les informations que l'on souhaite sur ces graphes : moyenne, médiane, longueur minimum, maximum
+    Un autre programme peut ensuite calculer les informations que l'on souhaite sur ces graphes : moyenne, médiane, longueur minimum, maximum.
 \end{frame}
 \begin{frame}{Résultat sur un jeu de données aléatoire}
     \centering
         \includegraphics[height=0.8\textheight]{sp_r}
 
-    Nombre de chemins en fonction de leur longueur
 \end{frame}
 \begin{frame}{Problèmes}
     \begin{itemize}
-        \item Cet algorithme donne le plus court chemin entre deux points spécifiques du graphe, on peut ainsi l'appliquer sur chaque couple de sommets
         \item La solution trouvée est alors optimale en terme de temps de trajet
         \item La capacité de transport entre les deux points vaut $(|S| - 2) *$ "nombre de places dans une rame"
+        \item Cet algorithme donne le plus court chemin entre deux points spécifiques du graphe, on peut ainsi l'appliquer sur chaque couple de sommets
         \item Mais il reste deux problèmes
         \begin{itemize}
             \item Risque de lignes en double sur des portions de trajet
@@ -197,13 +196,13 @@
 \section{Deuxième approche : algorithme de Kruskal}
 \begin{frame}{Kruskal}
     \begin{block}{Algorithme de Kruskal}
-        Algorithme qui trouve un arbre couvrant de poids minimal dans un Graphe
+        Algorithme qui trouve un arbre couvrant de poids minimal dans un Graphe.
     \end{block}
     \begin{block}{Définition}
-        Un arbre couvrant est un graphe $G'=(S, A')$ où $A' \subset A$
+        Un arbre couvrant est un sous-graphe $G'=(S, A')$ de $G=(S, A)$ où $A' \subset A$ et pour tous $(u, v) \in A$, il existe un chemin de $u$ à $v$ dans $G'$.
     \end{block}
     \begin{exampleblock}{Remarque}
-        Un arbre couvrant de poids minimum est \textbf{un} arbre couvrant dont la somme des poids des arêtes de $A'$ est la plus petite
+        Un arbre couvrant de poids minimum est \textbf{un} arbre couvrant dont la somme des poids des arêtes de $A'$ est la plus petite.
     \end{exampleblock}
 \end{frame}
 \begin{frame}{Choix et utilisation de l'algorithme}
@@ -212,26 +211,25 @@
     \begin{itemize}
         \item Complexité : $O(|A| log |A|)$
         \item Algorithme correct : le sous-graphe renvoyé est un arbre couvrant de poids minimum
-        \item Fonctionne ici car la fonction de poids est positive
     \end{itemize}
 \end{frame}
 \begin{frame}{Production de l'algorithme}
     \centering
         \includegraphics[width=0.5\textwidth]{k}
 
-    Chaque sommet est relié à tous les autres par un chemin
+    Chaque sommet est relié à tous les autres par un chemin.
 \end{frame}
 \begin{frame}{Résultat sur un jeu de données aléatoire}
     \centering
         \includegraphics[height=0.8\textheight]{k_r}
 
-    Une grande partie des chemins a une longueur faible
+    Une grande partie des chemins a une longueur faible.
 \end{frame}
 \begin{frame}{Problèmes}
     \begin{itemize}
-        \item Cet algorithme fournit un unique chemin entre chaque couple de sommets
+        \item Cet algorithme fournit un unique chemin entre chaque couple de sommets sauf entre les sommets haut et bas
+        \item La capacité de transport entre les deux points vaut le nombre de places dans une rame
         \item Certains chemins semblent donc absurdes et beaucoup trop longs entre certains couples de sommets
-        \item La capacité de transport entre les deux points est le nombre de places dans une rame
         \item On peut alors ajouter des arêtes avec l'algorithme de Dijkstra vu avant
         \item Beaucoup de lignes différentes à créer
     \end{itemize}
@@ -241,18 +239,18 @@
 
 \begin{frame}{Résumé de ce qu'on a vu}
     Les deux algorithmes vu précédemment ne suffisent pas à répondre à la question.
-    De plus les villes se développent en agglomérations
+    De plus les villes se développent en agglomérations, certaines lieux peuvent devenir des hubs.
 \end{frame}
 
 \begin{frame}{Idée}
-    Utiliser l'algorithme des K-moyennes afin de regrouper des centres d'intérêt entre eux, relier les groupes entre eux puis relier les centres d'intérêt dans ces groupes
+    Utiliser l'algorithme des K-moyennes afin de regrouper des centres d'intérêt entre eux, relier les groupes entre eux puis relier les centres d'intérêt dans ces groupes.
 \end{frame}
 \begin{frame}{K-moyennes}
     \begin{block}{K-moyennes}
-        Algorithme de regroupement de points en K groupes appelés clusters afin de minimiser la distance entre les points d'un même groupe
+        Algorithme de regroupement de points en K groupes appelés clusters afin de minimiser la distance entre les points d'un même groupe.
     \end{block}
     \begin{exampleblock}{Remarque}
-        On utilise ici de l'algorithme de Lloyd, ou algorithme naïf
+        On utilise ici de l'algorithme de Lloyd, ou algorithme naïf.
     \end{exampleblock}
 \end{frame}
 \begin{frame}{Choix et utilisation de l'algorithme}
@@ -263,7 +261,7 @@
         \item L'algorithme produit une solution souvent proche de l'optimale
     \end{itemize}
     \begin{alertblock}{Attention}
-        L'algorithme ne converge pas nécessairement vers une solution pour certaines combinaisons de jeux de données, valeurs de K, positions initiales des centroïdes
+        L'algorithme ne converge pas nécessairement vers une solution pour certaines combinaisons de jeux de données, valeurs de K, positions initiales des centroïdes.
     \end{alertblock}
 \end{frame}
 \begin{frame}{Résultat sur un jeu de données aléatoire}
@@ -295,7 +293,7 @@
         \centering
             \includegraphics[width=0.5\textwidth]{m4}
 
-        Après plusieurs itérations, convergence
+        Après plusieurs itérations, convergence.
     }
 \end{frame}
 \begin{frame}{Utilisation}
@@ -305,15 +303,16 @@
         \item Si on considère des quartiers d'une ville, on peut relier les clusters directement entre eux
         \item Si on considère une ville et son agglomération, on relie chaque cluster au cluster de la ville principale
     \end{itemize}
-    Complexité totale de l'algorithme : $O(K (|S| i + |A| log |A|))$
+    Complexité totale de l'algorithme : $O(K (|S| i + |A| log |A|))$.
 \end{frame}
 \begin{frame}{Avantages}
     \begin{itemize}
+        \item Création de chemins plus courts avec un réseau reliant les clusters entre eux
         \item Réduction de la complexité du problème en créant le réseau sur des ensembles plus petits
         \item Adaptation à des villes dont les centres d'intérêt ne sont pas répartis de façon homogène dans l'espace, ou des agglomérations
     \end{itemize}
 \end{frame}
-\begin{frame}{Production de l'algorithme final}
+\begin{frame}{Production de l'algorithme final sur un jeu de données fixé}
     \centering
         \includegraphics[width=0.5\textwidth]{k_k}
 \end{frame}
@@ -325,15 +324,15 @@
 \UseRawInputEncoding
 \section{Codes}
 \begin{frame}[allowframebreaks]{shortestpath.c}
-    \lstinputlisting[language=C, firstline=165, lastline=199]{shortestpath.c} 
+    \lstinputlisting[language=C, firstline=165, lastline=197]{shortestpath.c} 
 \end{frame}
 \begin{frame}[allowframebreaks]{kruskal.c}
     \lstinputlisting[language=C, firstline=218, lastline=245]{kruskal.c} 
 \end{frame}
 \begin{frame}[allowframebreaks]{kavg.c}
-    \lstinputlisting[language=C, firstline=250, lastline=298]{kavg.c} 
+    \lstinputlisting[language=C, firstline=250, lastline=286]{kavg.c} 
 \end{frame}
 \begin{frame}[allowframebreaks]{graph.py}
-    \lstinputlisting[language=Python, firstline=58, lastline=71]{graph.py} 
+    \lstinputlisting[language=Python, firstline=46, lastline=75]{graph.py} 
 \end{frame}
 \end{document}

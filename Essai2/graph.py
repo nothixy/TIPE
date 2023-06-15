@@ -33,42 +33,45 @@ paths = []
 
 # Calculate path length between two nodes
 
-def calculatePath(node1, node2, array, pred):
-    if node1 == node2:
-        # print(total)
-        return 0
-    x = 0
-    for elt in array:
-        if elt['s1'] == node1:
-            if elt['s2'] != pred:
-                x = calculatePath(elt['s2'], node2, array, node1)
-                if x != None:
-                    x = x + elt['w']
-                    break
-        if elt['s2'] == node1:
-            if elt['s1'] != pred:
-                x = calculatePath(elt['s1'], node2, array, node1)
-                if x != None:
-                    x = x + elt['w']
-                    break
-    return x
-
-
-
 edges = []
 for elt in X:
     if elt['s1'] not in edges:
         edges.append(elt['s1'])
     if elt['s2'] not in edges:
         edges.append(elt['s2'])
+
+Vus = [False] * (max(edges) + 1)
+# print("len(Vus) = {}".format(len(Vus)))
+
+def calculatePath(node1, node2, array):
+    if node1 == node2:
+        return 0
+    x = 0
+    for elt in array:
+        if elt['s1'] == node1:
+            if not Vus[elt['s2']]:
+                Vus[elt['s2']] = True
+                x = calculatePath(elt['s2'], node2, array)
+                if x != None:
+                    x = x + elt['w']
+                    break
+        if elt['s2'] == node1:
+            if not Vus[elt['s1']]:
+                Vus[elt['s1']] = True
+                x = calculatePath(elt['s1'], node2, array)
+                if x != None:
+                    x = x + elt['w']
+                    break
+    return x
+
 for edge1 in edges:
     for edge2 in edges:
         if edge1 != edge2:
-            path = calculatePath(edge1, edge2, X, None)
-            # print(path)
+            Vus = [False] * (max(edges) + 1)
+            path = calculatePath(edge1, edge2, X)
+            print(edge1, edge2, path)
             if path != None and path != 0:
                 paths.append(path)
-                # paths.append(path)
 # print(paths)
 paths = np.array(paths)
 
