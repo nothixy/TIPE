@@ -1,16 +1,13 @@
 #include <stdio.h>
-
 typedef struct edge {
     int s1;
     int s2;
     double w;
 } edge;
-
 typedef struct Edgelist {
     int s;
     edge* list;
 } Edgelist;
-
 int writeEdgeListArray(Edgelist* li1, char* filename, char* filename_raw) {
     Edgelist* li = malloc(sizeof(Edgelist));
     li = li1;
@@ -27,15 +24,11 @@ int writeEdgeListArray(Edgelist* li1, char* filename, char* filename_raw) {
     }
     err += fprintf(fd_raw, "%d %d %lf\n", li->list[li->s - 1].s1, li->list[li->s - 1].s2, li->list[li->s - 1].w);
     err += fprintf(fd, "{\n\"s1\": %d,\n\"s2\": %d,\n\"w\": %lf\n}\n", li->list[li->s - 1].s1, li->list[li->s - 1].s2, li->list[li->s - 1].w);
-    // while (li != NULL && li->next != NULL) {
-    //     err += fprintf(fd, "{\ns1: %d;\ns2: %d\nw: %lf\n;}\n", li->s1, li->s2, li->w);
-    // }
     err += fprintf(fd, "]\n}\n");
     fclose(fd_raw);
     fclose(fd);
     return err;
 }
-
 Edgelist* getVars(char* filename) {
     int err = 0;
     FILE* fd;
@@ -48,7 +41,6 @@ Edgelist* getVars(char* filename) {
     fclose(fd);
     return li;
 }
-
 int writeRawValue() {
     return 0;
 }
