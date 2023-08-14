@@ -10,7 +10,7 @@ La ville
 - Mettre en application des algorithmes de graphe et analyser leur efficacité
 - Trouver un résultat efficace
 - Créer un réseau réaliste
-- Avoir une complexité raisonnable (inférieure à $O(n^2)$)
+- Avoir une complexité raisonnable (inférieure à $O(n^2)$ )
 
 ## Description
 ### Sup
@@ -44,19 +44,25 @@ Installation des dépendances : `pip install -r requirements.txt`
 
 ## Captures d'écran
 metro.c
-![metro.c](metro.c.png)
+
+![metro.c](Sup/images/metro_c.png)
 
 shortestpath.c
+
 ![shortestpath.c](Spe/images/sp.png)
 
 kruskal.c
+
 ![kruskal.c](Spe/images/k.png)
 
 kavg.c
+
 ![kavg.c](Spe/images/m4.png)
 
 kavg + kruskal
+
 ![kavg + kruskal](Spe/images/k_k.png)
 
 graph.py
+
 ![graph.py](Spe/images/k_k_r.png)
