@@ -112,6 +112,59 @@ void define_stations();
 void creer_station_sur_lignes(ligne* lines, int len, int index);
 int get_train(int x, int y);
 
+int matching(int** tab1, int len1, int** tab2, int len2) {
+	for (int i = 0; i < len1; i++) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < len2; k++) {
+				for (int l = 0; l < 3; l++) {
+					if (tab1[i][j] == tab2[k][l]) return 1;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+int calculate_directions_aux(int depart, int arrivee) {
+	int** ligne_s_depart;
+	int found = 0;
+	for (int i = 0; i < 2; i++) {
+		if (indexOf(depart, lignes[i].stations, 3) != -1) {
+			found++;
+			ligne_s_depart = malloc(found * sizeof(int*));
+			ligne_s_depart[found - 1] = lignes[i].stations;
+		}
+	}
+	int** ligne_s_arrivee;
+	int found2 = 0;
+	for (int i = 0; i < 2; i++) {
+		if (indexOf(arrivee, lignes[i].stations, 3) != -1) {
+			found++;
+			ligne_s_arrivee = malloc(found2 * sizeof(int*));
+			ligne_s_arrivee[found2 - 1] = lignes[i].stations;
+		}
+	}
+	int lesgo = matching(ligne_s_depart, found, ligne_s_arrivee, found2);
+	if (lesgo != -1) {
+		return lesgo;
+	} else {
+		int val = 0;
+		for (int i = 0; i < found2; i++) {
+			for (int k = 0; k < lignes[i].len; k++) {
+				int rt = calculate_directions_aux(depart, lignes[i].stations[k]);
+				if (rt != 1) val = rt;
+			}
+		}
+		return val;
+	}
+}
+
+int calculate_directions(personne voyageur) {
+	int depart = voyageur.station_actuelle;
+	int arrivee = voyageur.destination;
+	return calculate_directions_aux(depart, arrivee);
+}
+
 void print_personnes() {
 	wclear(w_personnes);
 	wresize(w_personnes, lcount, 30);
@@ -299,7 +352,7 @@ void getinput() {
 						.pos = {cpos[0], cpos[1]},
 						.nom = "Nouvelle gare",
 					};
-					realloc(stations.tab, (len(stations) + 1) * sizeof(gare));
+					stations.tab = realloc(stations.tab, (len(stations) + 1) * sizeof(gare));
 					stations.tab[len(stations)] = n;
 					stations.len++;
 					//push(stations, (gare) n);
@@ -319,6 +372,7 @@ void getinput() {
 			default:
 				break;
 		}
+		usleep(1000);
 		cbreak();
 		print_personnes();
 		print_stations();
@@ -378,56 +432,6 @@ int get_train(int x, int y) {
 		}
 	}
 	return train_number;
-}
-
-int matching(int** tab1, int len1, int** tab2, int len2) {
-	for (int i = 0; i < len1; i++) {
-		for (int j = 0; j < 3; j++) {
-			for (int k = 0; k < len2; k++) {
-				for (int l = 0; l < 3; l++) {
-					if (tab1[i][j] == tab2[k][l]) return 1;
-				}
-			}
-		}
-	}
-	return -1;
-}
-
-int calculate_directions_aux(int depart, int arrivee) {
-	int** ligne_s_depart;
-	int found = 0;
-	for (int i = 0; i < 2; i++) {
-		if (indexOf(depart, lignes[i].stations, 3) != -1) {
-			found++;
-			ligne_s_depart = malloc(found * sizeof(int*));
-			ligne_s_depart[found - 1] = lignes[i].stations;
-		}
-	}
-	int** ligne_s_arrivee;
-	int found2 = 0;
-	for (int i = 0; i < 2; i++) {
-		if (indexOf(arrivee, lignes[i].stations, 3) != -1) {
-			found++;
-			ligne_s_arrivee = malloc(found2 * sizeof(int*));
-			ligne_s_arrivee[found2 - 1] = lignes[i].stations;
-		}
-	}
-	int lesgo = matching(ligne_s_depart, found, ligne_s_arrivee, found2);
-	if (lesgo != -1) {
-		return lesgo;
-	} else {
-		for (int i = 0; i < found2; i++) {
-			for (int k = 0; k < lignes[i].len; k++) {
-				return calculate_directions_aux(depart, lignes[i].stations[k]);
-			}
-		}
-	}
-}
-
-int calculate_directions(personne voyageur) {
-	int depart = voyageur.station_actuelle;
-	int arrivee = voyageur.destination;
-	return calculate_directions_aux(depart, arrivee);
 }
 
 int indexOf(int n, int* array, int len) {

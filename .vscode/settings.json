@@ -4,12 +4,14 @@
         "switch": "default"
     },
     "files.associations": {
-        "vector.h": "c",
-        "json.h": "c",
-        "stdio.h": "c",
-        "stdbool.h": "c",
-        "math.h": "c",
-        "execinfo.h": "c"
-    },
+		"vector.h": "c",
+		"json.h": "c",
+		"stdio.h": "c",
+		"stdbool.h": "c",
+		"math.h": "c",
+		"execinfo.h": "c",
+		"kavg.h": "c",
+		"sdl.h": "c"
+	},
     "makefile.makefilePath": "Essai2/Makefile"
 }

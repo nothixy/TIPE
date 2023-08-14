@@ -1,8 +1,0 @@
-Septembre 2022 : Recherche de bibliographie, début de l'implémentation de l'algorithme de Dijkstra
-Octobre 2022 : Correction de bugs et amélioration de l'algorithme
-Novembre 2022 : Recherche de bibliographie, algorithme de Kruskal
-Décembre 2022 : Script d'exploitation des résultats
-Janvier 2023 : Début de l'écriture de la MCOT, recherche sur l'algorithme des k-moyennes
-Mars 2023 : Avancement du script d'exploitation des résultats, début de la présentation
-Avril 2023 : Suite de la présentation et correction de bugs
-Mai 2023 : Fin de la présentation
