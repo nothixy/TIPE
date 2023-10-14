@@ -1,0 +1,16 @@
+*.fls
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.fdb_latexmk
+*.aux
+*.json
+*.blg
+*.log
+*.nav
+*.out
+*.txt
+.vscode/
+.idea/
+Meilleur DOT.txt
