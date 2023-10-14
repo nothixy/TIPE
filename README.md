@@ -27,7 +27,7 @@ Requiert ncursesw et SDL2
 
 `./kavg.c [fichiers_de_sortie [fichier_stations]]`
 
-## Évaluation des résultats fournis par les codes (spé)
+## Évaluation des résultats fournis par les codes
 Installation des dépendances : `pip install -r requirements.txt`
 
 `python graph.py <fichier_donnees.json>`
